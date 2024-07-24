@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/splashScreen">
+
+    <fragment
+        android:id="@+id/splashScreen"
+        android:name="com.sudedincer.movieapp.view.SplashScreen"
+        android:label="fragment_splash_screen"
+        tools:layout="@layout/fragment_splash_screen" >
+        <action
+            android:id="@+id/action_splashScreen_to_viewPagerFragment"
+            app:destination="@id/viewPagerFragment"
+            app:popUpTo="@id/splashScreen"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashScreen_to_homeScreen"
+            app:destination="@id/homeScreen" />
+        <action
+            android:id="@+id/action_splashScreen_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewPagerFragment"
+        android:name="com.sudedincer.movieapp.view.onboarding.ViewPagerFragment"
+        android:label="fragment_view_pager"
+        tools:layout="@layout/fragment_view_pager" >
+        <action
+            android:id="@+id/action_viewPagerFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/viewPagerFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.sudedincer.movieapp.view.LoginScreen"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_homeScreen"
+            app:destination="@id/homeScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeScreen"
+        android:name="com.sudedincer.movieapp.view.HomeScreen"
+        android:label="fragment_home_screen"
+        tools:layout="@layout/fragment_home_screen" >
+        <action
+            android:id="@+id/action_homeScreen_to_watchlistScreen"
+            app:destination="@id/watchlistScreen" />
+        <action
+            android:id="@+id/action_homeScreen_to_detailsScreen"
+            app:destination="@id/detailsScreen" />
+        <action
+            android:id="@+id/action_homeScreen_to_favoritesScreen"
+            app:destination="@id/favoritesScreen" />
+        <action
+            android:id="@+id/action_homeScreen_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/watchlistScreen"
+        android:name="com.sudedincer.movieapp.view.WatchlistScreen"
+        android:label="fragment_watchlist_screen"
+        tools:layout="@layout/fragment_watchlist_screen" >
+        <action
+            android:id="@+id/action_watchlistScreen_to_homeScreen"
+            app:destination="@id/homeScreen" />
+        <action
+            android:id="@+id/action_watchlistScreen_to_detailsScreen"
+            app:destination="@id/detailsScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsScreen"
+        android:name="com.sudedincer.movieapp.view.DetailsScreen"
+        android:label="fragment_details_screen"
+        tools:layout="@layout/fragment_details_screen" />
+    <fragment
+        android:id="@+id/favoritesScreen"
+        android:name="com.sudedincer.movieapp.view.FavoritesScreen"
+        android:label="fragment_favorites_screen"
+        tools:layout="@layout/fragment_favorites_screen" >
+        <action
+            android:id="@+id/action_favoritesScreen_to_homeScreen"
+            app:destination="@id/homeScreen" />
+        <action
+            android:id="@+id/action_favoritesScreen_to_detailsScreen"
+            app:destination="@id/detailsScreen" />
+        <action
+            android:id="@+id/action_favoritesScreen_to_watchlistScreen"
+            app:destination="@id/watchlistScreen" />
+        <action
+            android:id="@+id/action_favoritesScreen_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.sudedincer.movieapp.view.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_homeScreen"
+            app:destination="@id/homeScreen" />
+        <action
+            android:id="@+id/action_profileFragment_to_watchlistScreen"
+            app:destination="@id/watchlistScreen" />
+        <action
+            android:id="@+id/action_profileFragment_to_favoritesScreen"
+            app:destination="@id/favoritesScreen" />
+        <action
+            android:id="@+id/action_profileFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+</navigation>

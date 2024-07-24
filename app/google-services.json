@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "805913682830",
+    "project_id": "movies-bd34b",
+    "storage_bucket": "movies-bd34b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:805913682830:android:9b98b57668af85727afadf",
+        "android_client_info": {
+          "package_name": "com.sudedincer.movieapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "805913682830-68j914tc26e80vsbeoq150vbkra59po9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sudedincer.movieapp",
+            "certificate_hash": "c4fca59daa102e3e1507e5613ec983fc680219d9"
+          }
+        },
+        {
+          "client_id": "805913682830-c14mhrto695ipc7odc0iqekmde6b1eje.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC87TbwHrZXB9QRtZhApOBvPcpacx4W9_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "805913682830-c14mhrto695ipc7odc0iqekmde6b1eje.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
