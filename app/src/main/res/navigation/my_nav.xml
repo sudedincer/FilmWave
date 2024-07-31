@@ -71,6 +71,12 @@
         <action
             android:id="@+id/action_watchlistScreen_to_detailsScreen"
             app:destination="@id/detailsScreen" />
+        <action
+            android:id="@+id/action_watchlistScreen_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_watchlistScreen_to_favoritesScreen"
+            app:destination="@id/favoritesScreen" />
     </fragment>
     <fragment
         android:id="@+id/detailsScreen"

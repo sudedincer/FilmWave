@@ -31,11 +31,13 @@ class DetailsScreen : Fragment() {
     private lateinit var movieYear: TextView
     private lateinit var backButton: Button
     private lateinit var favButton: Button
+    private lateinit var watchlistButton: Button
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
     private lateinit var storage: FirebaseStorage
     private lateinit var movieId: String
     private var isFavorite: Boolean = false
+    private var isWatchlist: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +62,7 @@ class DetailsScreen : Fragment() {
         movieYear = view.findViewById(R.id.releaseDate)
         backButton = view.findViewById(R.id.backButton)
         favButton = view.findViewById(R.id.addFavButton)
+        watchlistButton=view.findViewById(R.id.addWatchlistButton)
 
         loadData()
 
@@ -72,6 +75,12 @@ class DetailsScreen : Fragment() {
         }
 
         checkIfFavorite()
+
+        watchlistButton.setOnClickListener {
+            toggleWatchlist()
+        }
+
+        checkIfWatchlist()
 
         return view
     }
@@ -107,53 +116,24 @@ class DetailsScreen : Fragment() {
         val user = auth.currentUser
 
         if (user != null) {
-            val uuid = UUID.randomUUID()
-            val imageName = "$uuid.jpg"
+            val moviesCollection = firestore.collection("Favorites")
 
-            val reference = storage.reference
-            val imageReference = reference.child("images").child(imageName)
+            val data1 = hashMapOf(
+                "email" to user.email!!,
+                "id" to movieId,
+            )
 
-            // ImageView'dan bir URI elde edin
-            val drawable = movieImageView.drawable
-            if (drawable != null) {
-                // Bitmap veya Uri elde etme işlemi
-                val bitmap = (drawable as BitmapDrawable).bitmap
-                val file = File(requireContext().cacheDir, "image.jpg")  // `requireContext()` kullanın
-                val fileOutputStream = FileOutputStream(file)
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream)
-                fileOutputStream.close()
-                val imageUri = Uri.fromFile(file)
-
-                imageReference.putFile(imageUri).addOnSuccessListener {
-                    val uploadPictureReference = storage.reference.child("images").child(imageName)
-                    uploadPictureReference.downloadUrl.addOnSuccessListener { uri ->
-                        val downloadUrl = uri.toString()
-                        val moviesCollection = firestore.collection("Favorites")
-
-                        val data1 = hashMapOf(
-                            "email" to user.email!!,
-                            "id" to movieId,
-                            "year" to movieYear.text.toString(),
-                            "title" to movieTitle.text.toString(),
-                            "downloadurl" to downloadUrl
-                        )
-
-                        moviesCollection.add(data1)
-                            .addOnSuccessListener {
-                                if (isAdded) {
-                                    Toast.makeText(requireContext(), "Data added successfully", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                            .addOnFailureListener { e ->
-                                if (isAdded) {
-                                    Toast.makeText(requireContext(), "Error adding document: ${e.message}", Toast.LENGTH_SHORT).show()
-                                }
-                            }
+            moviesCollection.add(data1)
+                .addOnSuccessListener {
+                    if (isAdded) {
+                        Toast.makeText(requireContext(), "Data added successfully", Toast.LENGTH_SHORT).show()
                     }
-                }.addOnFailureListener { e ->
-                    println("Failed to get download URL: ${e.message}")
                 }
-            }
+                .addOnFailureListener { e ->
+                    if (isAdded) {
+                        Toast.makeText(requireContext(), "Error adding document: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
         }
     }
 
@@ -192,6 +172,96 @@ class DetailsScreen : Fragment() {
             favButton.text = "Remove from Favorites"
         } else {
             favButton.text = "Add to Favorites"
+        }
+    }
+
+    private fun toggleWatchlist() {
+        val user = auth.currentUser
+
+        if (user != null) {
+            val moviesCollection = firestore.collection("Watchlist")
+            val query = moviesCollection
+                .whereEqualTo("email", user.email)
+                .whereEqualTo("id", movieId)
+                .get()
+
+            query.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val result = task.result
+                    if (result != null && result.isEmpty) {
+                        addWatchlist()
+                    } else {
+                        removeWatchlist(result)
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Error checking favorites: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else {
+            Toast.makeText(requireContext(), "User not authenticated", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun addWatchlist() {
+        val user = auth.currentUser
+
+        if (user != null) {
+            val moviesCollection = firestore.collection("Watchlist")
+
+            val data1 = hashMapOf(
+                "email" to user.email!!,
+                "id" to movieId,
+
+            )
+
+            moviesCollection.add(data1)
+                .addOnSuccessListener {
+                    if (isAdded) {
+                        Toast.makeText(requireContext(), "Data added successfully", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener { e ->
+                    if (isAdded) {
+                        Toast.makeText(requireContext(), "Error adding document: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+        }
+    }
+    private fun removeWatchlist(result: QuerySnapshot) {
+        for (document in result) {
+            document.reference.delete()
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "Removed from watchlist", Toast.LENGTH_SHORT).show()
+                    isWatchlist = false
+                    updateWatchlistButton()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(requireContext(), "Error removing document: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
+
+    private fun checkIfWatchlist() {
+        val user = auth.currentUser
+
+        if (user != null) {
+            val query = firestore.collection("Watchlist")
+                .whereEqualTo("email", user.email)
+                .whereEqualTo("id", movieId)
+                .get()
+
+            query.addOnSuccessListener { result ->
+                isWatchlist = !result.isEmpty
+                updateWatchlistButton()
+            }
+        }
+    }
+
+    private fun updateWatchlistButton() {
+        if (isWatchlist) {
+            watchlistButton.text = "Remove from Watchlist"
+        } else {
+            watchlistButton.text = "Add to Watchlist"
         }
     }
 

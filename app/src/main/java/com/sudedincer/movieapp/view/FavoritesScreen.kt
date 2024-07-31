@@ -44,8 +44,8 @@ import retrofit2.converter.gson.GsonConverterFactory
             val view = inflater.inflate(R.layout.fragment_favorites_screen, container, false)
 
             recyclerView = view.findViewById(R.id.recyclerFav)
-            val layoutManagerUpcoming = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            recyclerView.layoutManager = layoutManagerUpcoming
+            val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            recyclerView.layoutManager = layoutManager
 
 
             val bottomNavigationView: BottomNavigationView = view.findViewById(R.id.bottom_navigation_fav)
