@@ -1,6 +1,5 @@
 package com.sudedincer.movieapp.view
 
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -15,7 +14,6 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignIn.getClient
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -80,7 +78,14 @@ class ProfileFragment : Fragment() {
 
 
         val account = GoogleSignIn.getLastSignedInAccount(requireContext())
-        updateUI(account)
+
+        if (account != null) {
+            nameTextView.text = account.displayName
+            emailTextView.text = account.email
+            Glide.with(this)
+                .load(account.photoUrl)
+                .into(profileImageView)
+        }
 
         signOutButton.setOnClickListener {
             googleSignInClient.signOut().addOnCompleteListener {
@@ -91,13 +96,4 @@ class ProfileFragment : Fragment() {
         return view
     }
 
-    private fun updateUI(account: GoogleSignInAccount?) {
-        if (account != null) {
-            nameTextView.text = account.displayName
-            emailTextView.text = account.email
-            Glide.with(this)
-                .load(account.photoUrl)
-                .into(profileImageView)
-        }
-    }
 }

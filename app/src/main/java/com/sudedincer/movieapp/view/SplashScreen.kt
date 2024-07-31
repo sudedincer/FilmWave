@@ -14,12 +14,9 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.sudedincer.movieapp.R
-import com.sudedincer.movieapp.databinding.FragmentSplashScreenBinding
 
 
 class SplashScreen : Fragment() {
-    private var _binding: FragmentSplashScreenBinding? = null
-    private val binding get() = _binding!!
     private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
@@ -50,9 +47,5 @@ class SplashScreen : Fragment() {
         return sharedPreferences.getBoolean("finished", false)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 
 }

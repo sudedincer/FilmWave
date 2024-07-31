@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Favorite Movies"
-        android:textSize="24dp"
+        android:textSize="30dp"
         android:textColor="@color/white">
 
     </TextView>
@@ -21,8 +21,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerFav"
         android:layout_width="383dp"
-        android:layout_height="607dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="538dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation_fav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.428"

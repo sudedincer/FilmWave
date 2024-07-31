@@ -8,16 +8,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.sudedincer.movieapp.R
 import com.sudedincer.movieapp.model.MovieResult
+import com.sudedincer.movieapp.R
+import com.sudedincer.movieapp.Repository.Retrofit
 
 class RecyclerHorizontalAdapter(
-    private val movieList: List<MovieResult>,
+    private val movieList: List<HashMap<String, Any>>,
     private val listener: Listener
 ) : RecyclerView.Adapter<RecyclerHorizontalAdapter.ViewHolder>() {
 
     interface Listener {
-        fun onItemClick(movie: MovieResult)
+        fun onItemClick(movie: HashMap<String, Any>)
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -25,17 +26,34 @@ class RecyclerHorizontalAdapter(
         private val movieTitle: TextView = view.findViewById(R.id.titleH)
         private val movieYear: TextView = view.findViewById(R.id.dateH)
 
-        fun bind(movie: MovieResult) {
-            Glide.with(itemView.context)
-                .load("https://image.tmdb.org/t/p/w500${movie.posterPath}") // URL'yi uygun şekilde yapılandır
-                .into(movieImageView)
+        fun bind(movie: HashMap<String, Any>) {
+            val id = movie["id"] as? String
+
+            if (id != null) {
+                Retrofit().loadMovieDetails(id) { movieData ->
+                    movieData?.let {
+                        val title = it.title
+                        val year = it.releaseDate
+                        val posterUrl = "https://image.tmdb.org/t/p/w500${it.posterPath}"
+
+                        Glide.with(itemView.context)
+                            .load(posterUrl)
+                            .into(movieImageView)
+
+                        movieTitle.text = title
+                        movieYear.text = year
+
+                        movieTitle.setTextColor(Color.WHITE)
+                        movieYear.setTextColor(Color.WHITE)
+                        movieImageView.setBackgroundColor(Color.parseColor("#1e3d59"))
+                    }
+                }
+            }
 
             itemView.setOnClickListener { listener.onItemClick(movie) }
-
-            movieTitle.text = movie.title
-            movieYear.text = movie.releaseDate
             itemView.setBackgroundColor(Color.parseColor("#1e3d59"))
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

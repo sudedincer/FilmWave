@@ -76,7 +76,11 @@
         android:id="@+id/detailsScreen"
         android:name="com.sudedincer.movieapp.view.DetailsScreen"
         android:label="fragment_details_screen"
-        tools:layout="@layout/fragment_details_screen" />
+        tools:layout="@layout/fragment_details_screen" >
+        <action
+            android:id="@+id/action_detailsScreen_to_favoritesScreen"
+            app:destination="@id/favoritesScreen" />
+    </fragment>
     <fragment
         android:id="@+id/favoritesScreen"
         android:name="com.sudedincer.movieapp.view.FavoritesScreen"

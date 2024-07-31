@@ -7,13 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseAuth
-import com.sudedincer.movieapp.databinding.FragmentLoginBinding
 
 
 
 import android.content.Intent
 
-import android.util.Log
 import androidx.navigation.fragment.findNavController
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -24,7 +22,9 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 
 import com.google.firebase.auth.GoogleAuthProvider
+
 import com.sudedincer.movieapp.R
+import com.sudedincer.movieapp.databinding.FragmentLoginBinding
 
 class LoginScreen : Fragment() {
 

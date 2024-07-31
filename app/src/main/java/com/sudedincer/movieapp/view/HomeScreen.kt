@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,8 +17,7 @@ import com.sudedincer.movieapp.R
 import com.sudedincer.movieapp.adapter.RecyclerViewAdapter
 import com.sudedincer.movieapp.model.MovieResponse
 import com.sudedincer.movieapp.model.MovieResult
-import com.sudedincer.movieapp.service.NowPlayingAPI
-import com.sudedincer.movieapp.service.UpcomingAPI
+import com.sudedincer.movieapp.service.MovieAPI
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -78,67 +78,37 @@ class HomeScreen : Fragment(),RecyclerViewAdapter.Listener {
         recyclerViewUpcoming.addItemDecoration(itemDecoration)
         recyclerViewNowPlaying.addItemDecoration(itemDecoration)
 
+
         loadUpcomingData()
         loadNowPlayingData()
+
         return view
     }
 
     private fun loadUpcomingData() {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val retrofitHelper = com.sudedincer.movieapp.Repository.Retrofit()
 
-        val service = retrofit.create(UpcomingAPI::class.java)
-        val call = service.getUpcomingMovies()
-        call.enqueue(object : retrofit2.Callback<MovieResponse> {
-            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                t.printStackTrace()
+        retrofitHelper.loadMovie { upcomingMovies ->
+            if (upcomingMovies != null) {
+                recyclerViewAdapter = RecyclerViewAdapter(upcomingMovies, this@HomeScreen)
+                recyclerViewUpcoming.adapter = recyclerViewAdapter
+            } else {
+                Toast.makeText(requireContext(), "Failed to load upcoming movies.", Toast.LENGTH_SHORT).show()
             }
-
-            override fun onResponse(
-                call: retrofit2.Call<MovieResponse>,
-                response: retrofit2.Response<MovieResponse>
-            ) {
-                if (response.isSuccessful) {
-                    response.body()?.let {
-                        upcomingMovies = it.results
-
-                        recyclerViewAdapter = RecyclerViewAdapter(upcomingMovies!!, this@HomeScreen)
-                        recyclerViewUpcoming.adapter = recyclerViewAdapter
-                    }
-                }
-            }
-        })
+        }
     }
 
     private fun loadNowPlayingData() {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val retrofitHelper = com.sudedincer.movieapp.Repository.Retrofit()
 
-        val service = retrofit.create(NowPlayingAPI::class.java) // Retrofit ile servisi bağlama
-        val call = service.getNowPlayingMovies()
-        call.enqueue(object : retrofit2.Callback<MovieResponse> {
-            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                t.printStackTrace()
+        retrofitHelper.loadMovie { nowPlayingMovies ->
+            if (nowPlayingMovies != null) {
+                recyclerViewAdapter = RecyclerViewAdapter(nowPlayingMovies, this@HomeScreen)
+                recyclerViewNowPlaying.adapter = recyclerViewAdapter
+            } else {
+                Toast.makeText(requireContext(), "Failed to load now playing movies.", Toast.LENGTH_SHORT).show()
             }
-
-            override fun onResponse(
-                call: retrofit2.Call<MovieResponse>,
-                response: retrofit2.Response<MovieResponse>
-            ) {
-                if (response.isSuccessful) {
-                    response.body()?.let {
-                        nowPlayingMovies = it.results
-
-                        recyclerViewAdapter = RecyclerViewAdapter(nowPlayingMovies!!, this@HomeScreen)
-                        recyclerViewNowPlaying.adapter = recyclerViewAdapter
-                    }
-                }
-            }
-        })
+        }
     }
 
 
