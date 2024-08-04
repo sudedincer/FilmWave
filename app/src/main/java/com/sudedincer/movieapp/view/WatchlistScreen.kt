@@ -63,6 +63,12 @@ class WatchlistScreen : Fragment() {
         fetchData()
 
 
+        val itemDecoration = SpaceItemDecoration(16)
+        recyclerView.addItemDecoration(itemDecoration)
+
+
+
+
         return view
     }
 

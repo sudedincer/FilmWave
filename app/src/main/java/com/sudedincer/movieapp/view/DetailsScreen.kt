@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
@@ -38,12 +40,16 @@ class DetailsScreen : Fragment() {
     private lateinit var movieId: String
     private var isFavorite: Boolean = false
     private var isWatchlist: Boolean = false
+    private lateinit var progressBar: ProgressBar
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
+
+
     }
 
     override fun onCreateView(
@@ -54,6 +60,8 @@ class DetailsScreen : Fragment() {
 
         movieId = arguments?.getString("id").toString()
 
+        val contentLayout: LinearLayout = view.findViewById(R.id.contentLayout)
+
         voteAverage = view.findViewById(R.id.voteAverage)
         genres = view.findViewById(R.id.genre)
         overview = view.findViewById(R.id.overview)
@@ -63,20 +71,29 @@ class DetailsScreen : Fragment() {
         backButton = view.findViewById(R.id.backButton)
         favButton = view.findViewById(R.id.addFavButton)
         watchlistButton=view.findViewById(R.id.addWatchlistButton)
+        progressBar = view.findViewById(R.id.progressBar)
 
-        loadData()
+        loadData(contentLayout, progressBar)
 
         backButton.setOnClickListener {
             findNavController().popBackStack()
         }
 
         favButton.setOnClickListener {
-            toggleFavorite()
+            progressBar.visibility = View.VISIBLE
+            favButton.isEnabled = false
+
+            toggleFavorite ()
+
         }
 
         checkIfFavorite()
 
         watchlistButton.setOnClickListener {
+
+            progressBar.visibility = View.VISIBLE
+            watchlistButton.isEnabled = false
+
             toggleWatchlist()
         }
 
@@ -102,10 +119,13 @@ class DetailsScreen : Fragment() {
                         addFavorite()
                     } else {
                         removeFavorite(result)
+
                     }
                 } else {
                     Toast.makeText(requireContext(), "Error checking favorites: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
+                progressBar.visibility = View.GONE
+                favButton.isEnabled = true
             }
         } else {
             Toast.makeText(requireContext(), "User not authenticated", Toast.LENGTH_SHORT).show()
@@ -126,7 +146,9 @@ class DetailsScreen : Fragment() {
             moviesCollection.add(data1)
                 .addOnSuccessListener {
                     if (isAdded) {
-                        Toast.makeText(requireContext(), "Data added successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show()
+                        isFavorite = true
+                        updateFavoriteButton()
                     }
                 }
                 .addOnFailureListener { e ->
@@ -159,11 +181,11 @@ class DetailsScreen : Fragment() {
                 .whereEqualTo("email", user.email)
                 .whereEqualTo("id", movieId)
                 .get()
-
             query.addOnSuccessListener { result ->
                 isFavorite = !result.isEmpty
                 updateFavoriteButton()
             }
+
         }
     }
 
@@ -194,8 +216,10 @@ class DetailsScreen : Fragment() {
                         removeWatchlist(result)
                     }
                 } else {
-                    Toast.makeText(requireContext(), "Error checking favorites: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Error checking watchlist: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
+                progressBar.visibility = View.GONE
+                watchlistButton.isEnabled = true
             }
         } else {
             Toast.makeText(requireContext(), "User not authenticated", Toast.LENGTH_SHORT).show()
@@ -217,7 +241,9 @@ class DetailsScreen : Fragment() {
             moviesCollection.add(data1)
                 .addOnSuccessListener {
                     if (isAdded) {
-                        Toast.makeText(requireContext(), "Data added successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Added to watchlist", Toast.LENGTH_SHORT).show()
+                        isWatchlist=true
+                        updateWatchlistButton()
                     }
                 }
                 .addOnFailureListener { e ->
@@ -265,7 +291,7 @@ class DetailsScreen : Fragment() {
         }
     }
 
-    private fun loadData() {
+    private fun loadData(contentLayout: LinearLayout, progressBar: ProgressBar) {
         val retrofitHelper = com.sudedincer.movieapp.Repository.Retrofit()
 
         retrofitHelper.loadMovieDetails(movieId) { movie ->
@@ -281,8 +307,12 @@ class DetailsScreen : Fragment() {
 
                 val genreText = movie.genres.joinToString(", ") { it.name }
                 genres.text = genreText
+
+                progressBar.visibility = View.GONE
+                contentLayout.visibility = View.VISIBLE
             } else {
                 Toast.makeText(requireContext(), "Failed to load movie details.", Toast.LENGTH_SHORT).show()
+                progressBar.visibility = View.GONE
             }
         }
     }

@@ -72,4 +72,5 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.15.0")
     implementation("com.google.firebase:firebase-ml-model-interpreter:22.0.2")
     implementation("org.tensorflow:tensorflow-lite:2.0.0")
+    implementation ("com.facebook.shimmer:shimmer:0.5.0")
 }

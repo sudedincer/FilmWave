@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class Retrofit() {
     private val baseUrl="https://api.themoviedb.org/3/"
 
-    fun loadMovie(callback: (List<MovieResult>?) -> Unit) {
+    fun loadNowPlayingMovie(callback: (List<MovieResult>?) -> Unit) {
         val retrofit = Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
@@ -42,6 +42,37 @@ class Retrofit() {
             }
         })
     }
+
+    fun loadUpcomingMovie(callback: (List<MovieResult>?) -> Unit) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(MovieAPI::class.java) // Retrofit ile servisi bağlama
+        val call = service.getUpcomingMovies()
+
+        call.enqueue(object : retrofit2.Callback<MovieResponse> {
+            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+                t.printStackTrace()
+                callback(null) // Hata durumunda geri döndürme
+            }
+
+            override fun onResponse(
+                call: Call<MovieResponse>,
+                response: retrofit2.Response<MovieResponse>,
+            ) {
+                if (response.isSuccessful) {
+                    response.body()?.let { movieResponse ->
+                        callback(movieResponse.results) // Başarılı olduğunda verileri geri döndürme
+                    }
+                } else {
+                    callback(null) // Yanıt başarılı değilse null geri döndür
+                }
+            }
+        })
+    }
+
 
     fun loadMovieDetails(movieId: String, callback: (MovieData?) -> Unit) {
         val retrofit = Retrofit.Builder()

@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
@@ -35,6 +36,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
         private lateinit var recyclerView: RecyclerView
         private var movieAdapter: RecyclerHorizontalAdapter? = null
+        private lateinit var contentLayout: View
+        private lateinit var progressBar: ProgressBar
 
 
         override fun onCreateView(
@@ -44,6 +47,10 @@ import retrofit2.converter.gson.GsonConverterFactory
             val view = inflater.inflate(R.layout.fragment_favorites_screen, container, false)
 
             recyclerView = view.findViewById(R.id.recyclerFav)
+            contentLayout = view.findViewById(R.id.contentLayout)
+            progressBar = view.findViewById(R.id.progressBar)
+
+
             val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             recyclerView.layoutManager = layoutManager
 
@@ -72,7 +79,16 @@ import retrofit2.converter.gson.GsonConverterFactory
                 }
             }
 
+            contentLayout.visibility = View.GONE
+            progressBar.visibility = View.VISIBLE
+
             fetchData()
+
+
+            val itemDecoration = SpaceItemDecoration(16)
+            recyclerView.addItemDecoration(itemDecoration)
+
+
 
 
             return view
@@ -115,6 +131,9 @@ import retrofit2.converter.gson.GsonConverterFactory
                             }
                         )
                         recyclerView.adapter = movieAdapter
+
+                        contentLayout.visibility = View.VISIBLE
+                        progressBar.visibility = View.GONE
                     }
                     .addOnFailureListener { e ->
                         Toast.makeText(
@@ -127,6 +146,7 @@ import retrofit2.converter.gson.GsonConverterFactory
         }
 
     }
+
 
 
 

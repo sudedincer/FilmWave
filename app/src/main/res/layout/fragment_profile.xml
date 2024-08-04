@@ -21,7 +21,6 @@
         android:layout_marginTop="72dp"
         android:backgroundTint="@color/white"
         android:scaleType="centerCrop"
-        android:src="@drawable/profil"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

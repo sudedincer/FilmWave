@@ -24,9 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class HomeScreen : Fragment(),RecyclerViewAdapter.Listener {
 
-    private val BASE_URL = "https://api.themoviedb.org/3/"
-    private var upcomingMovies: List<MovieResult>? = null
-    private var nowPlayingMovies: List<MovieResult>? = null
+
     private var recyclerViewAdapter: RecyclerViewAdapter? = null
     private lateinit var recyclerViewUpcoming: RecyclerView
     private lateinit var recyclerViewNowPlaying: RecyclerView
@@ -88,7 +86,7 @@ class HomeScreen : Fragment(),RecyclerViewAdapter.Listener {
     private fun loadUpcomingData() {
         val retrofitHelper = com.sudedincer.movieapp.Repository.Retrofit()
 
-        retrofitHelper.loadMovie { upcomingMovies ->
+        retrofitHelper.loadUpcomingMovie { upcomingMovies ->
             if (upcomingMovies != null) {
                 recyclerViewAdapter = RecyclerViewAdapter(upcomingMovies, this@HomeScreen)
                 recyclerViewUpcoming.adapter = recyclerViewAdapter
@@ -101,7 +99,7 @@ class HomeScreen : Fragment(),RecyclerViewAdapter.Listener {
     private fun loadNowPlayingData() {
         val retrofitHelper = com.sudedincer.movieapp.Repository.Retrofit()
 
-        retrofitHelper.loadMovie { nowPlayingMovies ->
+        retrofitHelper.loadNowPlayingMovie { nowPlayingMovies ->
             if (nowPlayingMovies != null) {
                 recyclerViewAdapter = RecyclerViewAdapter(nowPlayingMovies, this@HomeScreen)
                 recyclerViewNowPlaying.adapter = recyclerViewAdapter

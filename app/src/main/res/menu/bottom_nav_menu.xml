@@ -15,6 +15,6 @@
         android:title="Watch List" />
     <item
         android:id="@+id/navigation_profile"
-        android:icon="@drawable/profil"
+        android:icon="@drawable/baseline_account_circle_24"
         android:title="Profile" />
 </menu>
